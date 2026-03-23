@@ -1,10 +1,13 @@
+from urllib.parse import quote
+
+
 def test_unregister_succeeds_for_enrolled_student(client):
     # Arrange
     activity_name = "Chess Club"
     email = "michael@mergington.edu"
 
     # Act
-    response = client.delete(f"/activities/{activity_name}/signup", params={"email": email})
+    response = client.delete(f"/activities/{quote(activity_name)}/signup", params={"email": email})
 
     # Assert
     assert response.status_code == 200
@@ -18,7 +21,7 @@ def test_unregister_returns_404_for_unknown_activity(client):
     email = "student@mergington.edu"
 
     # Act
-    response = client.delete(f"/activities/{activity_name}/signup", params={"email": email})
+    response = client.delete(f"/activities/{quote(activity_name)}/signup", params={"email": email})
 
     # Assert
     assert response.status_code == 404
@@ -32,7 +35,7 @@ def test_unregister_returns_404_for_non_enrolled_student(client):
     email = "not.enrolled@mergington.edu"
 
     # Act
-    response = client.delete(f"/activities/{activity_name}/signup", params={"email": email})
+    response = client.delete(f"/activities/{quote(activity_name)}/signup", params={"email": email})
 
     # Assert
     assert response.status_code == 404
