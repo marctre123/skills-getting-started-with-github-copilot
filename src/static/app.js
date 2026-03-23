@@ -21,26 +21,54 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const spotsLeft = details.max_participants - details.participants.length;
 
-        const participantsHTML = details.participants.length > 0
-          ? `<ul class="participants-list">${details.participants.map(p =>
-              `<li>
-                <span class="participant-email">${p}</span>
-                <button class="delete-btn" data-email="${p}" data-activity="${name}" title="Unregister participant">&times;</button>
-              </li>`
-            ).join("")}</ul>`
-          : `<p class="no-participants">No participants yet — be the first!</p>`;
-
+        // Build static part of the activity card
         activityCard.innerHTML = `
           <h4>${name}</h4>
           <p>${details.description}</p>
           <p><strong>Schedule:</strong> ${details.schedule}</p>
           <p><strong>Availability:</strong> ${spotsLeft} spots left</p>
-          <div class="participants-section">
-            <strong>Participants:</strong>
-            ${participantsHTML}
-          </div>
         `;
 
+        // Build participants section safely using DOM APIs
+        const participantsSection = document.createElement("div");
+        participantsSection.className = "participants-section";
+
+        const participantsLabel = document.createElement("strong");
+        participantsLabel.textContent = "Participants:";
+        participantsSection.appendChild(participantsLabel);
+
+        if (details.participants.length > 0) {
+          const ul = document.createElement("ul");
+          ul.className = "participants-list";
+
+          details.participants.forEach((p) => {
+            const li = document.createElement("li");
+
+            const span = document.createElement("span");
+            span.className = "participant-email";
+            span.textContent = p;
+            li.appendChild(span);
+
+            const button = document.createElement("button");
+            button.className = "delete-btn";
+            button.title = "Unregister participant";
+            button.textContent = "\u00d7";
+            button.dataset.email = p;
+            button.dataset.activity = name;
+            li.appendChild(button);
+
+            ul.appendChild(li);
+          });
+
+          participantsSection.appendChild(ul);
+        } else {
+          const noParticipants = document.createElement("p");
+          noParticipants.className = "no-participants";
+          noParticipants.textContent = "No participants yet \u2014 be the first!";
+          participantsSection.appendChild(noParticipants);
+        }
+
+        activityCard.appendChild(participantsSection);
         activitiesList.appendChild(activityCard);
 
         // Attach unregister handlers to delete buttons
