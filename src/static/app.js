@@ -50,8 +50,10 @@ document.addEventListener("DOMContentLoaded", () => {
             li.appendChild(span);
 
             const button = document.createElement("button");
+            button.type = "button";
             button.className = "delete-btn";
             button.title = "Unregister participant";
+            button.setAttribute("aria-label", `Unregister ${p} from ${name}`);
             button.textContent = "\u00d7";
             button.dataset.email = p;
             button.dataset.activity = name;
